@@ -1,9 +1,12 @@
 import Vue from 'vue'
+import { BootstrapVue, BootstrapVueIcons } from 'bootstrap-vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Crawler from '../views/Crawler.vue'
 
 Vue.use(VueRouter)
+Vue.use(BootstrapVue)
+Vue.use(BootstrapVueIcons)
 
 const routes = [
   {
