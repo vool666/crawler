@@ -46,10 +46,15 @@
           </b-input-group>
           <hr>
         </div>
-        <b-button variant="dark" href="#" align-v="center" id="nupp" v-on:click="päringHtml()"><b-icon icon="search"></b-icon>Päring</b-button>&nbsp;
+        <b-button variant="dark" href="#" align-v="center" id="nupp" v-on:click="getData()"><b-icon icon="search"></b-icon>Päring</b-button>&nbsp;
         <b-button v-b-toggle.sidebar-right><b-icon icon="filter" aria-hidden="true"></b-icon>Filtreeri</b-button>
 
       </b-card>
+
+      <!-- KAARDID -->
+
+      <product-card v-for=""></product-card>
+
 
 <!--      SIDEBAR-->
 
@@ -134,14 +139,17 @@
 <script>
 
 let getData = function () {
-  this.$http.get('http://localhost:8080/')
+  this.$http.get('http://192.168.55.171:8080/crawler/product/')
       .then(response => this.päring = response.data)
       .catch(response => console.log(response))
 
 }
 
+import Card from '@/components/Card.vue';
+
 export default {
   name: 'Crawler',
+  components: { "product-card": Card },
 
   data: function () {
     return {
@@ -150,6 +158,7 @@ export default {
       toode: [],
       kategooria: [],
       hind: [],
+      card: [],
       loading: true,
       selected : {
         pood: [],
@@ -158,15 +167,21 @@ export default {
         hind: []
       }
     }
-  }, methods: {
-    getData: getData
   },
+
+  methods: {
+    getData: getData,
+
+
+  },
+
   mounted() {
     this.getData();
     this.getPood();
     this.getToode();
     this.getKategooria();
     this.getHind();
+    this.fetchData();
   },
 
   watch: {
