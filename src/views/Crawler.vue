@@ -46,7 +46,7 @@
           </b-input-group>
           <hr>
         </div>
-        <b-button variant="dark" href="#" align-v="center" id="nupp"><b-icon icon="search"></b-icon>Päring</b-button>&nbsp;
+        <b-button variant="dark" href="#" align-v="center" id="nupp" v-on:click="päringHtml()"><b-icon icon="search"></b-icon>Päring</b-button>&nbsp;
         <b-button v-b-toggle.sidebar-right><b-icon icon="filter" aria-hidden="true"></b-icon>Filtreeri</b-button>
 
       </b-card>
@@ -56,14 +56,53 @@
       <div>
         <b-sidebar id="sidebar-right" title="Filtreeri" right shadow>
           <div class="px-3 py-2">
-            <p>
-              Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis
-              in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
-            </p>
-            <b-img src="https://picsum.photos/500/500/?image=54" fluid thumbnail></b-img>
+
+            <h3 class="mt-2">Pood</h3>
+            <div class="form-check" v-for="(pood, index) in pood">
+              <input class="form-check-input" type="checkbox" :value="index" :id="'pood'+index" v-model="selected.pood">
+              <label class="form-check-label" :for="'pood' + index">
+                {{ pood.name }} ({{ price.products_count }}) mis siia?
+              </label>
+            </div>
+
+            <h3 class="mt-2">Toode</h3>
+            <div class="form-check" v-for="(toode, index) in toode">
+              <input class="form-check-input" type="checkbox" :value="toode.id" :id="'toode'+index" v-model="selected.toode">
+              <label class="form-check-label" :for="'category' + index">
+                {{ toode.name }} ({{ category.products_count }})
+              </label>
+            </div>
+
+            <h3 class="mt-2">Kategooria</h3>
+            <div class="form-check" v-for="(kategooria, index) in kategooria">
+              <input class="form-check-input" type="checkbox" :value="kategooria.id" :id="'kategooria'+index" v-model="selected.kategooria">
+              <label class="form-check-label" :for="'kategooria' + index">
+                {{ kategooria.name }} ({{ manufacturer.products_count }})
+              </label>
+            </div>
+
+            <h3 class="mt-2">Hind</h3>
+            <div class="form-check" v-for="(hind, index) in hind">
+              <input class="form-check-input" type="checkbox" :value="hind.id" :id="'hind'+index" v-model="selected.hind">
+              <label class="form-check-label" :for="'hind' + index">
+                {{ hind.name }} ({{ manufacturer.products_count }})
+              </label>
+            </div>
           </div>
         </b-sidebar>
       </div>
+
+      <!-- PÄRING -->
+      <b-row>
+        <b-col>
+          <b-table striped hover :items="päring">
+          </b-table>
+        </b-col>
+        <b-col>
+
+        </b-col>
+      </b-row>
+
 
 <!--FOOTER-->
 
@@ -86,13 +125,61 @@
           </b-col>
         </b-row>
       </footer>
+
+
     </b-container>
   </div>
 </template>
 
 <script>
+
+let getData = function () {
+  this.$http.get('http://localhost:8080/')
+      .then(response => this.päring = response.data)
+      .catch(response => console.log(response))
+
+}
+
 export default {
-  name: 'Crawler'
+  name: 'Crawler',
+
+  data: function () {
+    return {
+      päring: [],
+      pood: [],
+      toode: [],
+      kategooria: [],
+      hind: [],
+      loading: true,
+      selected : {
+        pood: [],
+        toode: [],
+        kategooria: [],
+        hind: []
+      }
+    }
+  }, methods: {
+    getData: getData
+  },
+  mounted() {
+    this.getData();
+    this.getPood();
+    this.getToode();
+    this.getKategooria();
+    this.getHind();
+  },
+
+  watch: {
+    selected: {
+      handler: function () {
+        this.getPood();
+        this.getToode();
+        this.getKategooria();
+        this.getHind();
+      },
+      deep: true
+    }
+  }
 }
 </script>
 
