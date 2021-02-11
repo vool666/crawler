@@ -38,7 +38,7 @@
             <b-form-tags
                 input-id="tags-separators"
                 separator=",;"
-                placeholder="Sisesta ostukorv siia, eralda komaga"
+                placeholder="Sisesta tooted siia, eralda komaga"
                 no-add-on-enter
             >
             </b-form-tags>
@@ -57,6 +57,34 @@
       </b-card>
 
       <!-- KAARDID -->
+
+
+        <b-row align-v="center" class="g-0">
+          <b-card
+              title="test"
+              v-for="(result, index) in results"
+              class="itemcard "
+          >
+            <p>{{ index }}</p>
+            <p>{{ result.accountid }}</p>
+            <p>{{ result.deposit }}</p>
+            <p>{{ result.withdraw }}</p>
+            <p>{{ result.time }}</p>
+            <hr>
+            <b-button v-on:click="lisaKorvi" size="sm">Lisa ostukorvi</b-button>
+          </b-card>
+        </b-row>
+
+<!--      OSTUKORV-->
+
+      <b-card class="rounded-lg"
+              bg-variant="light"
+              title="Ostukorv">
+        <b-card-text>
+          Summa: {{lisaKorvi}}
+        </b-card-text>
+
+      </b-card>
 
 
       <!--      SIDEBAR-->
@@ -80,17 +108,6 @@
         </b-sidebar>
       </div>
 
-      <!-- PÄRING -->
-      <b-row>
-        <b-col>
-          <b-table striped hover :items="päring">
-          </b-table>
-        </b-col>
-        <b-col>
-
-        </b-col>
-      </b-row>
-
 
       <!--FOOTER-->
 
@@ -98,7 +115,7 @@
         <b-row align-v="center" class="justify-content-lg-between">
           <b-col lg="6">
             <div class="copyright text-center text-lg-left text-muted">
-              © <a href="https://www.creative-tim.com" class="font-weight-bold ml-1" target="_blank">Dream Team 2021</a>
+              © <a href="#" class="font-weight-bold ml-1" target="_blank">Dream Team 2021</a>
             </div>
           </b-col>
           <b-col lg="6">
@@ -121,8 +138,9 @@
 
 <script>
 
+
 let getData = function () {
-  this.$http.get('http://192.168.55.171:8080/crawler/product/')
+  this.$http.get('')
       .then(response => this.päring = response.data)
       .catch(response => console.log(response))
 
@@ -136,44 +154,37 @@ export default {
 
   data: function () {
     return {
+      algne: 0,
       päring: [],
-      pood: [],
-      toode: [],
-      kategooria: [],
-      hind: [],
-      card: [],
-      loading: true,
-      selected: {
-        pood: [],
-        toode: [],
-        kategooria: [],
-        hind: []
-      }
+      results: []
+
     }
   },
 
   methods: {
     getData: getData,
 
-    async fetchData() {
-      // this.$http.get("items.json")
-      //    .then(tagastus => {
-      //      console.log(tagastus);
-      //    })
-      const fetch2 = await fetch("items.json");
-      const tagastus = await fetch2.json();
-      console.log(tagastus);
-
-    },
-
-
-
-
   },
   mounted() {
     this.getData();
-    this.fetchData();
+    this.$http.get("http://localhost:8080/transactionhistory").then(response => {
+      this.results = response.data
+    })
   },
+
+  computed: {
+    lisaKorvi: function() {
+      return this.results.reduce(
+          function (acc, element) {
+            if (element.deposit) {
+              return acc + element.deposit
+            }
+            return acc
+          }, 0)
+    }
+
+
+  }
 }
 
 </script>
@@ -198,6 +209,11 @@ export default {
   background-color: #FFFFFF;
   color: black;
   text-align: center;
+}
+
+.itemcard {
+  margin: 1rem;
+  max-width: 20rem
 }
 
 

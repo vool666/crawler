@@ -21,14 +21,7 @@ export default {
 
 </style>
 
-<!-- watch: {
-     selected: {
-       handler: function () {
-         this.getPood();
-         this.getToode();
-         this.getKategooria();
-         this.getHind();
-       },
-       deep: true
-     }
-   } -->
+<!--teeList: function(){-->
+<!--return this.results.reduce(function(acc, element) {return acc + element.deposit})-->
+<!--}-->
+
