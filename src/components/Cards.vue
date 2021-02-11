@@ -13,7 +13,7 @@
 
 <script>
 export default {
-  name: "Card"
+  name: "Cards"
 }
 </script>
 
@@ -21,9 +21,14 @@ export default {
 
 </style>
 
-<!-- async fetchData() {
-const fetch = await fetch("");  fetch json
-const tagastus = await res.json();
-this.card = tagastus;
-console.log(tagastus);
- } -->
+<!-- watch: {
+     selected: {
+       handler: function () {
+         this.getPood();
+         this.getToode();
+         this.getKategooria();
+         this.getHind();
+       },
+       deep: true
+     }
+   } -->

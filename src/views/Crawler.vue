@@ -3,7 +3,7 @@
 
     <b-container fluid="md" class="p-3">
 
-<!--NAVBAR-->
+      <!--NAVBAR-->
 
       <b-navbar toggleable type="light" variant="light" class="rounded-lg">
         <b-navbar-brand href="#">Navigation</b-navbar-brand>
@@ -24,7 +24,7 @@
 
       <hr>
 
-<!--      CRAWLER-->
+      <!--      CRAWLER-->
 
       <b-card class="rounded-lg"
               bg-variant="light"
@@ -32,68 +32,51 @@
               img-top>
         <div>
           <b-input-group>
-          <b-input-group-prepend is-text>
-            <b-icon icon="basket3"></b-icon>
-          </b-input-group-prepend>
-          <b-form-tags
-              input-id="tags-separators"
-              v-model="value"
-              separator=",;"
-              placeholder="Sisesta ostukorv siia, eralda komaga"
-              no-add-on-enter
-          >
-          </b-form-tags>
+            <b-input-group-prepend is-text>
+              <b-icon icon="basket3"></b-icon>
+            </b-input-group-prepend>
+            <b-form-tags
+                input-id="tags-separators"
+                separator=",;"
+                placeholder="Sisesta ostukorv siia, eralda komaga"
+                no-add-on-enter
+            >
+            </b-form-tags>
           </b-input-group>
           <hr>
         </div>
-        <b-button variant="dark" href="#" align-v="center" id="nupp" v-on:click="getData()"><b-icon icon="search"></b-icon>Päring</b-button>&nbsp;
-        <b-button v-b-toggle.sidebar-right><b-icon icon="filter" aria-hidden="true"></b-icon>Filtreeri</b-button>
+        <b-button variant="dark" href="#" align-v="center" id="nupp" v-on:click="getData()">
+          <b-icon icon="search"></b-icon>
+          Päring
+        </b-button>&nbsp;
+        <b-button v-b-toggle.sidebar-right>
+          <b-icon icon="filter" aria-hidden="true"></b-icon>
+          Filtreeri
+        </b-button>
 
       </b-card>
 
       <!-- KAARDID -->
 
-      <product-card v-for=""></product-card>
 
-
-<!--      SIDEBAR-->
+      <!--      SIDEBAR-->
 
       <div>
         <b-sidebar id="sidebar-right" title="Filtreeri" right shadow>
           <div class="px-3 py-2">
 
             <h3 class="mt-2">Pood</h3>
-            <div class="form-check" v-for="(pood, index) in pood">
-              <input class="form-check-input" type="checkbox" :value="index" :id="'pood'+index" v-model="selected.pood">
-              <label class="form-check-label" :for="'pood' + index">
-                {{ pood.name }} ({{ price.products_count }}) mis siia?
-              </label>
-            </div>
 
-            <h3 class="mt-2">Toode</h3>
-            <div class="form-check" v-for="(toode, index) in toode">
-              <input class="form-check-input" type="checkbox" :value="toode.id" :id="'toode'+index" v-model="selected.toode">
-              <label class="form-check-label" :for="'category' + index">
-                {{ toode.name }} ({{ category.products_count }})
-              </label>
-            </div>
-
-            <h3 class="mt-2">Kategooria</h3>
-            <div class="form-check" v-for="(kategooria, index) in kategooria">
-              <input class="form-check-input" type="checkbox" :value="kategooria.id" :id="'kategooria'+index" v-model="selected.kategooria">
-              <label class="form-check-label" :for="'kategooria' + index">
-                {{ kategooria.name }} ({{ manufacturer.products_count }})
-              </label>
-            </div>
-
-            <h3 class="mt-2">Hind</h3>
-            <div class="form-check" v-for="(hind, index) in hind">
-              <input class="form-check-input" type="checkbox" :value="hind.id" :id="'hind'+index" v-model="selected.hind">
-              <label class="form-check-label" :for="'hind' + index">
-                {{ hind.name }} ({{ manufacturer.products_count }})
-              </label>
-            </div>
           </div>
+
+          <h3 class="mt-2">Toode</h3>
+
+
+          <h3 class="mt-2">Kategooria</h3>
+
+
+          <h3 class="mt-2">Hind</h3>
+
         </b-sidebar>
       </div>
 
@@ -109,7 +92,7 @@
       </b-row>
 
 
-<!--FOOTER-->
+      <!--FOOTER-->
 
       <footer class="footer px-4">
         <b-row align-v="center" class="justify-content-lg-between">
@@ -145,11 +128,11 @@ let getData = function () {
 
 }
 
-import Card from '@/components/Card.vue';
+import Card from '@/components/Cards.vue';
 
 export default {
   name: 'Crawler',
-  components: { "product-card": Card },
+  components: {"product-card": Card},
 
   data: function () {
     return {
@@ -160,7 +143,7 @@ export default {
       hind: [],
       card: [],
       loading: true,
-      selected : {
+      selected: {
         pood: [],
         toode: [],
         kategooria: [],
@@ -172,30 +155,27 @@ export default {
   methods: {
     getData: getData,
 
+    async fetchData() {
+      // this.$http.get("items.json")
+      //    .then(tagastus => {
+      //      console.log(tagastus);
+      //    })
+      const fetch2 = await fetch("items.json");
+      const tagastus = await fetch2.json();
+      console.log(tagastus);
+
+    },
+
+
+
 
   },
-
   mounted() {
     this.getData();
-    this.getPood();
-    this.getToode();
-    this.getKategooria();
-    this.getHind();
     this.fetchData();
   },
-
-  watch: {
-    selected: {
-      handler: function () {
-        this.getPood();
-        this.getToode();
-        this.getKategooria();
-        this.getHind();
-      },
-      deep: true
-    }
-  }
 }
+
 </script>
 
 <style scoped>
