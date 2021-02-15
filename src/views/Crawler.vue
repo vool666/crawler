@@ -31,19 +31,10 @@
               title="Crawler"
               img-top>
         <div>
-          <b-input-group>
-            <b-input-group-prepend is-text>
-              <b-icon icon="basket3"></b-icon>
-            </b-input-group-prepend>
-            <b-form-tags
-                input-id="tags-separators"
-                separator=",;"
-                placeholder="Sisesta tooted siia, eralda komaga"
-                no-add-on-enter
-                v-model="products.productid"
-            >
-            </b-form-tags>
-          </b-input-group>
+
+          <b-form-input v-model="products.name" placeholder="Sisesta toode">
+            <b-icon icon="basket3"></b-icon>
+          </b-form-input>
           <hr>
           {{ products }}
         </div>
@@ -63,20 +54,16 @@
 
       <b-row align-v="center" class="g-0">
         <b-card
-            title="test"
             v-for="(result, index) in results"
             class="itemcard"
         >
-          <p>{{ index }}</p>
-          <p>{{ result.price }}</p>
-          <p>{{ result.retailerId }}</p>
-          <p>{{ result.descriptionId }}</p>
           <p>{{ result.name }}</p>
-          <p>{{ result.url }}</p>
+          <p>Kogus: {{ result.quantity }}</p>
+
           <hr>
-          <b-button>
-            <!--              v-on:click="lisaKorvi" -->
-            size="sm">Lisa ostukorvi
+          <b-button
+              v-on:click="postOstukorvHtml(result.id)"
+              size="sm">Lisa ostukorvi
           </b-button>
         </b-card>
       </b-row>
@@ -84,14 +71,13 @@
       <!--      OSTUKORV-->
 
       <hr>
-      <b-card class="rounded-lg"
-              bg-variant="light"
-              title="Ostukorv">
-        <b-card-text>
-          <!--          Summa: {{ lisaKorvi }}-->
-        </b-card-text>
-
-      </b-card>
+      <b-table class="rounded-lg"
+               bg-variant="light"
+               title="Ostukorv"
+               striped
+               hover
+               :items="ostukorv">
+      </b-table>
 
 
       <!--      SIDEBAR-->
@@ -148,19 +134,30 @@
 let postDataJs = function () {
 
   let postData = {
-    productid: this.products.productid
+    name: this.products.name
   }
   console.log(postData)
   console.log(this.products.productid)
-  this.$http.post('http://localhost:8080/crawler/list', {test: "test"})
-      .then(() => this.getData());
+  this.$http.post('http://localhost:8080/crawler/list', postData)
+      .then(response => this.results = response.data)
+      .catch(response => console.log(response));
 }
 
 let getData = function () {
   this.$http.post('http://localhost:8080/crawler/list')
       .then(response => this.results = response.data)
       .catch(response => console.log(response))
+}
 
+let postOstukorvJs = function (productid) {
+
+  let ostukorvData = {
+    id: productid,
+    sessionid: this.$session.id()
+  }
+  this.$http.post('', ostukorvData)
+      .then(response => this.ostukorv = response.data)
+      .catch(response => console.log(response))
 }
 
 import Card from '@/components/Cards.vue';
@@ -172,7 +169,7 @@ export default {
   data: function () {
     return {
       algne: 0,
-      päring: [],
+      ostukorv: [],
       results: [],
       products: {}
 
@@ -181,10 +178,13 @@ export default {
 
   methods: {
     getData: getData,
-    postDataHtml: postDataJs
+    postDataHtml: postDataJs,
+    postOstukorvHtml: postOstukorvJs
   },
 
   mounted() {
+
+    this.$session.start();
     /*this.getData();
     this.$http.get("http://localhost:8080/crawler/list").then(response => {
       this.results = response.data
@@ -234,7 +234,7 @@ export default {
 
 .itemcard {
   margin: 1rem;
-  max-width: 20rem
+  width: 15rem;
 }
 
 
