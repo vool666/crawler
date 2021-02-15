@@ -40,12 +40,13 @@
                 separator=",;"
                 placeholder="Sisesta tooted siia, eralda komaga"
                 no-add-on-enter
+                v-model="products.productid"
             >
             </b-form-tags>
           </b-input-group>
           <hr>
         </div>
-        <b-button variant="dark" href="#" align-v="center" id="nupp" v-on:click="getData()">
+        <b-button variant="dark" href="#" align-v="center" id="nupp" v-on:click="postDataHtml()">
           <b-icon icon="search"></b-icon>
           Päring
         </b-button>&nbsp;
@@ -59,29 +60,33 @@
       <!-- KAARDID -->
 
 
-        <b-row align-v="center" class="g-0">
-          <b-card
-              title="test"
-              v-for="(result, index) in results"
-              class="itemcard "
-          >
-            <p>{{ index }}</p>
-            <p>{{ result.accountid }}</p>
-            <p>{{ result.deposit }}</p>
-            <p>{{ result.withdraw }}</p>
-            <p>{{ result.time }}</p>
-            <hr>
-            <b-button v-on:click="lisaKorvi" size="sm">Lisa ostukorvi</b-button>
-          </b-card>
-        </b-row>
+      <b-row align-v="center" class="g-0">
+        <b-card
+            title="test"
+            v-for="(result, index) in results"
+            class="itemcard"
+        >
+          <p>{{ index }}</p>
+          <p>{{ result.price }}</p>
+          <p>{{ result.retailerId }}</p>
+          <p>{{ result.descriptionId }}</p>
+          <p>{{ result.name }}</p>
+          <p>{{ result.url }}</p>
+          <hr>
+          <b-button>
+<!--              v-on:click="lisaKorvi" -->
+              size="sm">Lisa ostukorvi</b-button>
+        </b-card>
+      </b-row>
 
-<!--      OSTUKORV-->
+      <!--      OSTUKORV-->
 
+      <hr>
       <b-card class="rounded-lg"
               bg-variant="light"
               title="Ostukorv">
         <b-card-text>
-          Summa: {{lisaKorvi}}
+<!--          Summa: {{ lisaKorvi }}-->
         </b-card-text>
 
       </b-card>
@@ -138,6 +143,14 @@
 
 <script>
 
+let postDataJs = function () {
+
+  let postData = {
+    productid: this.products.productid
+  }
+  this.$http.post('', postData)
+      .then(() => this.getData());
+}
 
 let getData = function () {
   this.$http.get('')
@@ -156,32 +169,34 @@ export default {
     return {
       algne: 0,
       päring: [],
-      results: []
+      results: [],
+      products: {}
 
     }
   },
 
   methods: {
     getData: getData,
-
+    postDataHtml: postDataJs
   },
+
   mounted() {
     this.getData();
-    this.$http.get("http://localhost:8080/transactionhistory").then(response => {
+    this.$http.get("http://localhost:8080/crawler/product").then(response => {
       this.results = response.data
     })
   },
 
   computed: {
-    lisaKorvi: function() {
+/*    lisaKorvi: function () {
       return this.results.reduce(
           function (acc, element) {
-            if (element.deposit) {
-              return acc + element.deposit
+            if (element.price) {
+              return acc + element.price
             }
             return acc
           }, 0)
-    }
+    }*/
 
 
   }
