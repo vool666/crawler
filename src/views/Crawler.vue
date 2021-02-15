@@ -45,6 +45,7 @@
             </b-form-tags>
           </b-input-group>
           <hr>
+          {{ products }}
         </div>
         <b-button variant="dark" href="#" align-v="center" id="nupp" v-on:click="postDataHtml()">
           <b-icon icon="search"></b-icon>
@@ -74,8 +75,9 @@
           <p>{{ result.url }}</p>
           <hr>
           <b-button>
-<!--              v-on:click="lisaKorvi" -->
-              size="sm">Lisa ostukorvi</b-button>
+            <!--              v-on:click="lisaKorvi" -->
+            size="sm">Lisa ostukorvi
+          </b-button>
         </b-card>
       </b-row>
 
@@ -86,7 +88,7 @@
               bg-variant="light"
               title="Ostukorv">
         <b-card-text>
-<!--          Summa: {{ lisaKorvi }}-->
+          <!--          Summa: {{ lisaKorvi }}-->
         </b-card-text>
 
       </b-card>
@@ -148,13 +150,15 @@ let postDataJs = function () {
   let postData = {
     productid: this.products.productid
   }
-  this.$http.post('', postData)
+  console.log(postData)
+  console.log(this.products.productid)
+  this.$http.post('http://localhost:8080/crawler/list', {test: "test"})
       .then(() => this.getData());
 }
 
 let getData = function () {
-  this.$http.get('')
-      .then(response => this.päring = response.data)
+  this.$http.post('http://localhost:8080/crawler/list')
+      .then(response => this.results = response.data)
       .catch(response => console.log(response))
 
 }
@@ -181,22 +185,24 @@ export default {
   },
 
   mounted() {
-    this.getData();
-    this.$http.get("http://localhost:8080/crawler/product").then(response => {
+    /*this.getData();
+    this.$http.get("http://localhost:8080/crawler/list").then(response => {
       this.results = response.data
     })
+  }*/
   },
 
+
   computed: {
-/*    lisaKorvi: function () {
-      return this.results.reduce(
-          function (acc, element) {
-            if (element.price) {
-              return acc + element.price
-            }
-            return acc
-          }, 0)
-    }*/
+    /*    lisaKorvi: function () {
+          return this.results.reduce(
+              function (acc, element) {
+                if (element.price) {
+                  return acc + element.price
+                }
+                return acc
+              }, 0)
+        }*/
 
 
   }
