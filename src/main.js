@@ -11,6 +11,7 @@ import VueSession from 'vue-session'
 
 Vue.config.productionTip = false
 Vue.prototype.$http = axios
+Vue.prototype.$host="http://localhost:8081/crawler"  //tõsta this.$http.get(this.$host+ "/crawler")
 
 
 new Vue({

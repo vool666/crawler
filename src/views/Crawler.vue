@@ -76,63 +76,65 @@
                title="Ostukorv"
                striped
                hover
-               :items="ostukorv">
+               :items="ostukorv"
+               :fields="fields">
       </b-table>
 
+      <hr>
 
       <!--      SIDEBAR-->
 
       <div>
-        <b-sidebar id="sidebar-right" title="Filtreeri" right shadow>
-          <div class="px-3 py-2">
+        <b-sidebar id=" sidebar-right
+      " title="Filtreeri" right shadow>
+      <div class="px-3 py-2">
 
-            <h3 class="mt-2">Pood</h3>
+        <h3 class="mt-2">Pood</h3>
 
-          </div>
-
-          <h3 class="mt-2">Toode</h3>
-
-
-          <h3 class="mt-2">Kategooria</h3>
-
-
-          <h3 class="mt-2">Hind</h3>
-
-        </b-sidebar>
       </div>
 
-
-      <!--FOOTER-->
-
-      <footer class="footer px-4">
-        <b-row align-v="center" class="justify-content-lg-between">
-          <b-col lg="6">
-            <div class="copyright text-center text-lg-left text-muted">
-              © <a href="#" class="font-weight-bold ml-1" target="_blank">Dream Team 2021</a>
-            </div>
-          </b-col>
-          <b-col lg="6">
-            <b-nav align="center" class="nav-footer justify-content-lg-end">
-              <b-nav-item href="#" target="_blank">
-                About Us
-              </b-nav-item>
-              <b-nav-item href="#" target="_blank">
-                License
-              </b-nav-item>
-            </b-nav>
-          </b-col>
-        </b-row>
-      </footer>
+      <h3 class="mt-2">Toode</h3>
 
 
-    </b-container>
+      <h3 class="mt-2">Kategooria</h3>
+
+
+      <h3 class="mt-2">Hind</h3>
+
+      </b-sidebar>
+  </div>
+
+
+  <!--FOOTER-->
+
+  <footer class="footer px-4">
+    <b-row align-v="center" class="justify-content-lg-between">
+      <b-col lg="6">
+        <div class="copyright text-center text-lg-left text-muted">
+          © <a href="#" class="font-weight-bold ml-1" target="_blank">Dream Team 2021</a>
+        </div>
+      </b-col>
+      <b-col lg="6">
+        <b-nav align="center" class="nav-footer justify-content-lg-end">
+          <b-nav-item href="#" target="_blank">
+            About Us
+          </b-nav-item>
+          <b-nav-item href="#" target="_blank">
+            License
+          </b-nav-item>
+        </b-nav>
+      </b-col>
+    </b-row>
+  </footer>
+
+
+  </b-container>
   </div>
 </template>
 
 <script>
 
 let postDataJs = function () {
-
   let postData = {
     name: this.products.name
   }
@@ -152,10 +154,10 @@ let getData = function () {
 let postOstukorvJs = function (productid) {
 
   let ostukorvData = {
-    id: productid,
-    sessionid: this.$session.id()
+    descriptionId: productid,
+    sessionId: this.$session.id()
   }
-  this.$http.post('', ostukorvData)
+  this.$http.post('http://localhost:8080/crawler/cart', ostukorvData)
       .then(response => this.ostukorv = response.data)
       .catch(response => console.log(response))
 }
@@ -171,7 +173,23 @@ export default {
       algne: 0,
       ostukorv: [],
       results: [],
-      products: {}
+      products: {},
+      fields : [
+        {
+          key: "name",
+          sortable: true
+        },
+        {
+          key: "prismaPrice",
+
+        },
+        {
+          key: "coopPrice"
+        },
+        {
+          key: "selverPrice"
+        }
+      ]
 
     }
   },
@@ -185,6 +203,9 @@ export default {
   mounted() {
 
     this.$session.start();
+    this.$http.post('http://localhost:8080/crawler/cart', ostukorvData)
+        .then(response => this.ostukorv = response.data)
+        .catch(response => console.log(response))
     /*this.getData();
     this.$http.get("http://localhost:8080/crawler/list").then(response => {
       this.results = response.data
