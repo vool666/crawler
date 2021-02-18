@@ -7,19 +7,20 @@
 
       <b-card class="rounded-lg"
               bg-variant="light"
-              title="Crawler"
-              img-top>
+              header-class="card_header"
+      >
         <div>
+          <b-card-header
+              header-class="card_header">
+            Crawler
+          </b-card-header>
 
-          <b-form-input v-model="products.name" placeholder="Sisesta toode" @keyup="postDataHtml()">
+          <b-form-input v-model="products.name" placeholder="Sisesta toode" @keyup="checkButton(products.name)">
             <b-icon icon="basket3"></b-icon>
           </b-form-input>
           <hr>
         </div>
-        <b-button v-b-toggle.sidebar-right>
-          <b-icon icon="filter" aria-hidden="true"></b-icon>
-          Filtreeri
-        </b-button>
+
 
       </b-card>
 
@@ -36,7 +37,7 @@
           <p>{{ result.name }}</p>
           <hr>
           <b-button
-              v-on:click="postOstukorvHtml(result.id)"
+              v-on:click="postOstukorv(result.id)"
               size="sm">Lisa ostukorvi
           </b-button>
         </b-card>
@@ -51,42 +52,21 @@
                striped
                hover
                :items="ostukorv"
-               :fields="fields">
-        <template v-slot:cell(button)="data">
-          <b-button v-on:click="deleteOstukorvItemHtml(data.item.descriptionId)" size="sm">Delete</b-button>
+               :fields="fields"
+      >
+        <template v-slot:cell(-)="data">
+          <b-button v-on:click="deleteOstukorvItem(data.item.descriptionId)" size="sm">Kustuta</b-button>
         </template>
       </b-table>
 
       <hr>
 
-      <b-button variant="dark" href="#" align-v="center" id="nupp" v-on:click="deleteOstukorvHtml()">
+      <b-button variant="dark" href="#" align-v="center" id="nupp" v-on:click="deleteOstukorv()">
         <b-icon icon="trash"></b-icon>
         Kustuta ostukorv
       </b-button>
 
       <hr>
-
-      <!--      SIDEBAR-->
-
-      <div>
-        <b-sidebar id=" sidebar-right
-      " title="Filtreeri" right shadow>
-          <div class="px-3 py-2">
-
-            <h3 class="mt-2">Pood</h3>
-
-          </div>
-
-          <h3 class="mt-2">Toode</h3>
-
-
-          <h3 class="mt-2">Kategooria</h3>
-
-
-          <h3 class="mt-2">Hind</h3>
-
-        </b-sidebar>
-      </div>
 
 
       <!--FOOTER-->
@@ -118,7 +98,13 @@
 
 <script>
 
-let postDataJs = function () {
+let checkButton = function (word) {
+  if (word.length >= 3) {
+    this.postData()
+  }
+}
+
+let postData = function () {
   let postData = {
     name: this.products.name
   }
@@ -135,7 +121,7 @@ let getData = function () {
       .catch(response => console.log(response))
 }
 
-let postOstukorvJs = function (productid) {
+let postOstukorv = function (productid) {
 
   let ostukorvData = {
     descriptionId: productid,
@@ -146,7 +132,7 @@ let postOstukorvJs = function (productid) {
       .catch(response => console.log(response))
 }
 
-let deleteOstukorvItemJs = function (productid) {
+let deleteOstukorvItem = function (productid) {
 
   let ostukorvData = {
     descriptionId: productid,
@@ -157,7 +143,7 @@ let deleteOstukorvItemJs = function (productid) {
       .catch(response => console.log(response))
 }
 
-let deleteOstukorvJs = function () {
+let deleteOstukorv = function () {
 
   let ostukorvData = {
     sessionId: this.$session.id()
@@ -180,19 +166,24 @@ export default {
       fields: [
         {
           key: "name",
-          sortable: true
+          sortable: true,
+          showTitle: true
         },
         {
           key: "prismaPrice",
+          showTitle: true
         },
         {
-          key: "coopPrice"
+          key: "coopPrice",
+          showTitle: true
         },
         {
-          key: "selverPrice"
+          key: "selverPrice",
+          showTitle: true
         },
         {
-          key: "button"
+          key: "-",
+          showTitle: false
         }
 
       ]
@@ -201,11 +192,12 @@ export default {
   },
 
   methods: {
-    getData: getData,
-    postDataHtml: postDataJs,
-    postOstukorvHtml: postOstukorvJs,
-    deleteOstukorvItemHtml: deleteOstukorvItemJs,
-    deleteOstukorvHtml: deleteOstukorvJs
+    getData,
+    postData,
+    postOstukorv,
+    deleteOstukorvItem,
+    deleteOstukorv,
+    checkButton
   },
 
   mounted() {
@@ -245,6 +237,12 @@ img {
 .itemcard {
   margin: 1rem;
   width: 15rem;
+
+}
+
+.card_header {
+  font-family: "Press Start 2P";
+  font-size: 3rem;
 
 }
 
