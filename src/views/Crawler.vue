@@ -11,9 +11,10 @@
       >
         <div>
           <b-card-header
-              header-class="card_header">
+              header-class="card_header rounded-lg">
             Crawler
           </b-card-header>
+          <br>
 
           <b-form-input v-model="products.name" placeholder="Sisesta toode" @keyup="checkButton(products.name)">
             <b-icon icon="basket3"></b-icon>
@@ -241,7 +242,7 @@ img {
 }
 
 .card_header {
-  font-family: "Press Start 2P";
+  font-family: "Monoton";
   font-size: 3rem;
 
 }

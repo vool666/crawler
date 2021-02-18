@@ -11,6 +11,7 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@600&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Monoton&display=swap');
 #app {
   /*font-family: Avenir, Helvetica, Arial, sans-serif;*/
   -webkit-font-smoothing: antialiased;
