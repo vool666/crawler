@@ -3,27 +3,6 @@
 
     <b-container fluid="md" class="p-3">
 
-      <!--NAVBAR-->
-
-      <b-navbar toggleable type="light" variant="light" class="rounded-lg">
-        <b-navbar-brand href="#">Navigation</b-navbar-brand>
-
-        <b-navbar-toggle target="navbar-toggle-collapse">
-          <template #default="{ expanded }">
-            <b-icon v-if="expanded" icon="chevron-bar-up"></b-icon>
-            <b-icon v-else icon="chevron-bar-down"></b-icon>
-          </template>
-        </b-navbar-toggle>
-
-        <b-collapse id="navbar-toggle-collapse" is-nav>
-          <b-navbar-nav class="ml-auto">
-            <b-nav-item href="#">Kontakt</b-nav-item>
-          </b-navbar-nav>
-        </b-collapse>
-      </b-navbar>
-
-      <hr>
-
       <!--      CRAWLER-->
 
       <b-card class="rounded-lg"
@@ -32,16 +11,11 @@
               img-top>
         <div>
 
-          <b-form-input v-model="products.name" placeholder="Sisesta toode">
+          <b-form-input v-model="products.name" placeholder="Sisesta toode" @keyup="postDataHtml()">
             <b-icon icon="basket3"></b-icon>
           </b-form-input>
           <hr>
-          {{ products }}
         </div>
-        <b-button variant="dark" href="#" align-v="center" id="nupp" v-on:click="postDataHtml()">
-          <b-icon icon="search"></b-icon>
-          Päring
-        </b-button>&nbsp;
         <b-button v-b-toggle.sidebar-right>
           <b-icon icon="filter" aria-hidden="true"></b-icon>
           Filtreeri
@@ -56,10 +30,10 @@
         <b-card
             v-for="(result, index) in results"
             class="itemcard"
-        >
-          <p>{{ result.name }}</p>
-          <p>Kogus: {{ result.quantity }}</p>
+            v-bind:img-src="result.imgUrl"
+            img-top>
 
+          <p>{{ result.name }}</p>
           <hr>
           <b-button
               v-on:click="postOstukorvHtml(result.id)"
@@ -78,7 +52,17 @@
                hover
                :items="ostukorv"
                :fields="fields">
+        <template v-slot:cell(button)="data">
+          <b-button v-on:click="deleteOstukorvItemHtml(data.item.descriptionId)" size="sm">Delete</b-button>
+        </template>
       </b-table>
+
+      <hr>
+
+      <b-button variant="dark" href="#" align-v="center" id="nupp" v-on:click="deleteOstukorvHtml()">
+        <b-icon icon="trash"></b-icon>
+        Kustuta ostukorv
+      </b-button>
 
       <hr>
 
@@ -87,48 +71,48 @@
       <div>
         <b-sidebar id=" sidebar-right
       " title="Filtreeri" right shadow>
-      <div class="px-3 py-2">
+          <div class="px-3 py-2">
 
-        <h3 class="mt-2">Pood</h3>
+            <h3 class="mt-2">Pood</h3>
 
+          </div>
+
+          <h3 class="mt-2">Toode</h3>
+
+
+          <h3 class="mt-2">Kategooria</h3>
+
+
+          <h3 class="mt-2">Hind</h3>
+
+        </b-sidebar>
       </div>
 
-      <h3 class="mt-2">Toode</h3>
+
+      <!--FOOTER-->
+
+      <footer class="footer px-4">
+        <b-row align-v="center" class="justify-content-lg-between">
+          <b-col lg="6">
+            <div class="copyright text-center text-lg-left text-muted">
+              © <a href="#" class="font-weight-bold ml-1" target="_blank">Dream Team 2021</a>
+            </div>
+          </b-col>
+          <b-col lg="6">
+            <b-nav align="center" class="nav-footer justify-content-lg-end">
+              <b-nav-item href="#" target="_blank">
+                About Us
+              </b-nav-item>
+              <b-nav-item href="#" target="_blank">
+                License
+              </b-nav-item>
+            </b-nav>
+          </b-col>
+        </b-row>
+      </footer>
 
 
-      <h3 class="mt-2">Kategooria</h3>
-
-
-      <h3 class="mt-2">Hind</h3>
-
-      </b-sidebar>
-  </div>
-
-
-  <!--FOOTER-->
-
-  <footer class="footer px-4">
-    <b-row align-v="center" class="justify-content-lg-between">
-      <b-col lg="6">
-        <div class="copyright text-center text-lg-left text-muted">
-          © <a href="#" class="font-weight-bold ml-1" target="_blank">Dream Team 2021</a>
-        </div>
-      </b-col>
-      <b-col lg="6">
-        <b-nav align="center" class="nav-footer justify-content-lg-end">
-          <b-nav-item href="#" target="_blank">
-            About Us
-          </b-nav-item>
-          <b-nav-item href="#" target="_blank">
-            License
-          </b-nav-item>
-        </b-nav>
-      </b-col>
-    </b-row>
-  </footer>
-
-
-  </b-container>
+    </b-container>
   </div>
 </template>
 
@@ -162,11 +146,30 @@ let postOstukorvJs = function (productid) {
       .catch(response => console.log(response))
 }
 
-import Card from '@/components/Cards.vue';
+let deleteOstukorvItemJs = function (productid) {
+
+  let ostukorvData = {
+    descriptionId: productid,
+    sessionId: this.$session.id()
+  }
+  this.$http.post('http://localhost:8080/crawler/deleteitem', ostukorvData)
+      .then(response => this.ostukorv = response.data)
+      .catch(response => console.log(response))
+}
+
+let deleteOstukorvJs = function () {
+
+  let ostukorvData = {
+    sessionId: this.$session.id()
+  }
+  this.$http.post('http://localhost:8080/crawler/deletecart', ostukorvData)
+      .then(response => this.ostukorv = response.data)
+      .catch(response => console.log(response))
+}
+
 
 export default {
   name: 'Crawler',
-  components: {"product-card": Card},
 
   data: function () {
     return {
@@ -174,21 +177,24 @@ export default {
       ostukorv: [],
       results: [],
       products: {},
-      fields : [
+      fields: [
         {
           key: "name",
           sortable: true
         },
         {
           key: "prismaPrice",
-
         },
         {
           key: "coopPrice"
         },
         {
           key: "selverPrice"
+        },
+        {
+          key: "button"
         }
+
       ]
 
     }
@@ -197,35 +203,13 @@ export default {
   methods: {
     getData: getData,
     postDataHtml: postDataJs,
-    postOstukorvHtml: postOstukorvJs
+    postOstukorvHtml: postOstukorvJs,
+    deleteOstukorvItemHtml: deleteOstukorvItemJs,
+    deleteOstukorvHtml: deleteOstukorvJs
   },
 
   mounted() {
-
-    this.$session.start();
-    this.$http.post('http://localhost:8080/crawler/cart', ostukorvData)
-        .then(response => this.ostukorv = response.data)
-        .catch(response => console.log(response))
-    /*this.getData();
-    this.$http.get("http://localhost:8080/crawler/list").then(response => {
-      this.results = response.data
-    })
-  }*/
-  },
-
-
-  computed: {
-    /*    lisaKorvi: function () {
-          return this.results.reduce(
-              function (acc, element) {
-                if (element.price) {
-                  return acc + element.price
-                }
-                return acc
-              }, 0)
-        }*/
-
-
+    this.$session.start()
   }
 }
 
@@ -233,6 +217,11 @@ export default {
 
 <style scoped>
 
+img {
+  max-height: 50%;
+  width: auto;
+  margin-top: 5px
+}
 
 .p-3 {
   text-align: left;
@@ -256,6 +245,7 @@ export default {
 .itemcard {
   margin: 1rem;
   width: 15rem;
+
 }
 
 
